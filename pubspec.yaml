@@ -1,0 +1,68 @@
+name: flutter_application_1
+description: "SnapBack — Mindful productivity companion that connects your planner to your scroll time."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management
+  provider: ^6.1.2
+
+  # Local storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.3
+
+  # Environment / secrets
+  flutter_dotenv: ^5.1.0
+
+  # HTTP for OpenAI
+  http: ^1.2.1
+  dio: ^5.4.3+1
+
+  # Audio recording for Whisper
+  record: ^5.2.0
+  permission_handler: ^11.3.1
+
+  # Notifications
+  flutter_local_notifications: ^17.1.2
+  timezone: ^0.9.3
+
+  # Android-specific: overlay + accessibility bridge
+  flutter_overlay_window: ^0.4.5
+  app_settings: ^5.1.1
+  flutter_foreground_task: ^6.5.0
+
+  # UI niceties
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  intl: ^0.19.0
+  animations: ^2.0.11
+  shimmer: ^3.0.0
+
+  # Utilities
+  uuid: ^4.4.0
+  collection: ^1.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.11
+  mockito: ^5.4.4
+
+dependency_overrides:
+  record_linux: ^1.3.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/illustrations/

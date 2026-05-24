@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SnapBack</string>
+    <string name="accessibility_description">SnapBack uses this service to notice when you open Instagram, TikTok, YouTube, or Snapchat — and to nudge you when you pass your scroll limit. It does not read what is on your screen.</string>
+    <string name="overlay_title">Snap back?</string>
+    <string name="overlay_hint">Type what you\'re feeling…</string>
+    <string name="overlay_done">I\'m done scrolling</string>
+    <string name="overlay_snooze">5 more minutes</string>
+    <string name="overlay_loading">Thinking of what to say…</string>
+    <string name="overlay_helpline">If things feel heavy, Umang is there: 0317-4288665</string>
+    <string name="fg_channel_name">Focus service</string>
+    <string name="fg_notification_title">SnapBack is watching for scroll-time</string>
+    <string name="fg_notification_body">We\'ll step in when you pass your limit.</string>
+</resources>

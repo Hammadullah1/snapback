@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="snap_background">#FAF7F2</color>
+    <color name="snap_surface">#FFFFFF</color>
+    <color name="snap_text_primary">#2A2520</color>
+    <color name="snap_text_secondary">#6B5F52</color>
+    <color name="snap_accent">#C66B3D</color>
+    <color name="snap_accent_soft">#F2D9CB</color>
+    <color name="snap_success">#6B8E5A</color>
+    <color name="snap_warning">#D4A03E</color>
+    <color name="snap_danger">#B85450</color>
+    <color name="snap_divider">#E8DFD2</color>
+    <color name="snap_scrim">#80000000</color>
+</resources>
