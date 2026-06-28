@@ -1,64 +1,274 @@
-# SnapBack
+# 📱 SnapBack
 
-A mindful productivity Flutter app for teenagers. Plan your day by voice; when you scroll past your self-set limit on Instagram / TikTok / YouTube / Snapchat, SnapBack draws a gentle overlay referencing the actual tasks you said you'd do.
+> **A mindful productivity app for teenagers that gently interrupts doomscrolling and reconnects users with the goals they set for themselves.**
 
-## Setup
+SnapBack helps users stay intentional with their screen time. Instead of blocking apps or using guilt-based notifications, it provides calm, personalized interventions based on tasks the user previously planned using their own voice.
 
-1. **Install deps**
-   ```bash
-   flutter pub get
-   ```
+When a user exceeds their self-defined scrolling limit on apps like **Instagram**, **TikTok**, **YouTube**, or **Snapchat**, SnapBack displays a thoughtful overlay reminding them of the commitments they made earlier.
 
-2. **Configure secrets**
-   - `.env` is gitignored. The hackathon `.env` ships in the working tree with a real OpenAI key.
-   - For a clean checkout: `cp .env.example .env` and paste your key.
+---
 
-3. **Run**
-   ```bash
-   flutter run
-   ```
+# ✨ Features
 
-## Architecture
+* 🎙️ Voice-based daily planning
+* 🤖 AI-powered task extraction using OpenAI
+* 📱 Detects time spent on distracting apps
+* 💬 Personalized intervention messages
+* 🧠 Mood-aware safety detection
+* 📝 Daily reflection journal
+* 🔥 Productivity streak tracking
+* 💾 Offline local storage using Hive
+* 🔔 Local notifications
+* ⚡ Lightweight Flutter architecture
 
-- **`lib/main.dart`** — entry point, Hive + dotenv + notifications init, routing
-- **`lib/config/`** — env, constants, calm-minimalist theme
-- **`lib/models/`** — Hive types (TaskModel, SessionModel) with hand-written adapters
-- **`lib/services/`** — storage, voice (Whisper), notifications, permissions, overlay bridge, native sync
-- **`lib/agents/`** — 4 OpenAI agents: TaskExtractor, Intervention, MoodSafetyGate, Reflection
-- **`lib/state/`** — Provider-based state for tasks, sessions, prefs
-- **`lib/screens/`** — Onboarding, Home, VoiceInput, Planner, Reflection, Settings
-- **`android/app/src/main/kotlin/.../`** — AccessibilityService, OverlayService, BootReceiver, MainActivity
+---
 
-## How the intervention loop works
+# 🛠️ Tech Stack
 
-1. `SnapBackAccessibilityService` watches `TYPE_WINDOW_STATE_CHANGED` for the 4 monitored packages.
-2. Every 30s, it checks if the current session has exceeded the user's scroll limit (read from native SharedPreferences, pushed there from Dart on app pause).
-3. If exceeded, it starts `OverlayService` with the app name + minutes.
-4. `OverlayService` becomes a foreground service, inflates `overlay_intervention.xml` via `WindowManager.addView` with `TYPE_APPLICATION_OVERLAY`.
-5. It calls Flutter via `MethodChannel("com.snapback.app/overlay") → getInterventionMessage` — Dart's `OverlayBridgeService` invokes `InterventionAgent` which posts to OpenAI and returns a personalized message.
-6. The user must type ≥5 characters to unlock the buttons. Each keystroke (debounced 1s) calls `classifyMood` → `MoodSafetyGate`; if distress is detected, the overlay swaps to a caring response with the Umang helpline.
-7. Sessions are CSV-queued in native prefs and drained into Hive when the Flutter app next resumes.
+### Frontend
 
-## Streak rules
+* Flutter
+* Provider (State Management)
 
-Runs in `StorageService.computeAndUpdateStreak()`, called when ReflectionScreen opens after the user's reflection hour:
+### AI
 
-- `plannedToday == 0` → keep streak (don't punish empty days)
-- `completionRate >= 0.5` AND `scrollToday <= 2 × limit` → +1 if yesterday continued, else reset to 1
-- Otherwise → 0
+* OpenAI GPT
+* Whisper Speech-to-Text
 
-## Known limits (hackathon scope)
+### Storage
 
-- OpenAI key sits in the APK. Production path: move agent HTTP calls to a Cloudflare Worker proxy.
-- Whisper is request/response — no live transcript streaming.
-- In-app scroll detection (TYPE_VIEW_SCROLLED) is unreliable across Android versions; we use foreground-app duration which works everywhere.
-- OEM battery savers (Xiaomi, Realme, Oppo) may kill the accessibility service. Settings screen surfaces this; user must disable battery optimization manually.
+* Hive
+* SharedPreferences
 
-## Testing
+### Android Native
+
+* Accessibility Service
+* Foreground Overlay Service
+* Method Channels
+* WindowManager Overlay
+
+---
+
+# 🚀 Getting Started
+
+## 1. Install Dependencies
+
+```bash
+flutter pub get
+```
+
+---
+
+## 2. Configure Environment Variables
+
+The project uses a `.env` file for API keys.
+
+Create your environment file:
+
+```bash
+cp .env.example .env
+```
+
+Then add your OpenAI API key:
+
+```env
+OPENAI_API_KEY=your_api_key_here
+```
+
+---
+
+## 3. Run the Application
+
+```bash
+flutter run
+```
+
+---
+
+# 📂 Project Structure
+
+```
+lib/
+│
+├── agents/
+│   ├── TaskExtractor
+│   ├── Intervention
+│   ├── MoodSafetyGate
+│   └── Reflection
+│
+├── config/
+│   ├── Constants
+│   ├── Environment
+│   └── Theme
+│
+├── models/
+│   ├── TaskModel
+│   └── SessionModel
+│
+├── screens/
+│   ├── Home
+│   ├── Planner
+│   ├── VoiceInput
+│   ├── Reflection
+│   ├── Settings
+│   └── Onboarding
+│
+├── services/
+│   ├── Storage
+│   ├── Voice
+│   ├── Overlay Bridge
+│   ├── Notifications
+│   ├── Permissions
+│   └── Native Sync
+│
+├── state/
+│   └── Provider State Management
+│
+└── main.dart
+```
+
+Android-specific components are located in:
+
+```
+android/app/src/main/kotlin/
+```
+
+including:
+
+* Accessibility Service
+* Overlay Service
+* Boot Receiver
+* Main Activity
+
+---
+
+# ⚙️ How It Works
+
+## 1. Daily Planning
+
+The user speaks about the tasks they plan to complete.
+
+↓
+
+## 2. AI Task Extraction
+
+Whisper converts speech to text.
+
+OpenAI extracts structured tasks from the transcript.
+
+↓
+
+## 3. Activity Monitoring
+
+An Android Accessibility Service monitors whether the user is actively using:
+
+* Instagram
+* TikTok
+* YouTube
+* Snapchat
+
+↓
+
+## 4. Scroll Limit Detection
+
+Every 30 seconds the service checks whether the user's predefined screen-time limit has been exceeded.
+
+↓
+
+## 5. Personalized Intervention
+
+If the limit is reached:
+
+* A foreground overlay appears.
+* Flutter requests an AI-generated intervention message.
+* The message references the user's own planned tasks to encourage mindful choices.
+
+↓
+
+## 6. Mood Safety Check
+
+To dismiss the overlay, the user types a short response.
+
+Each response is analyzed by the Mood Safety agent.
+
+If signs of emotional distress are detected, the intervention changes to a more supportive message and provides the Umang helpline.
+
+↓
+
+## 7. Session Synchronization
+
+Screen-time sessions are temporarily stored in native SharedPreferences and synchronized into Hive when the Flutter application resumes.
+
+---
+
+# 🔥 Streak System
+
+The streak is updated when the Reflection screen opens after the user's configured reflection hour.
+
+### Rules
+
+* No planned tasks → streak is preserved.
+* At least **50%** of planned tasks completed **and**
+  total scrolling time ≤ **2×** the user's limit → streak increases.
+* Otherwise → streak resets.
+
+---
+
+# 🧪 Testing
+
+Run static analysis:
 
 ```bash
 flutter analyze
+```
+
+Run unit tests:
+
+```bash
 flutter test
 ```
 
-For UI verification, enable **Settings → Demo data** to seed 5 tasks + 3 sessions. Toggle off to clear.
+---
+
+# 🎮 Demo Mode
+
+Navigate to:
+
+```
+Settings → Demo Data
+```
+
+Enable Demo Data to automatically generate:
+
+* 5 sample tasks
+* 3 sample sessions
+
+Disable it to clear the demo content.
+
+---
+
+# ⚠️ Known Limitations
+
+* The OpenAI API key is currently bundled with the APK for hackathon purposes. A production deployment should proxy requests through a secure backend (e.g., Cloudflare Workers).
+* Whisper is used in request/response mode and does not support live transcription.
+* Android's `TYPE_VIEW_SCROLLED` event is inconsistent across devices, so screen-time tracking is based on foreground application duration.
+* Some Android manufacturers (e.g., Xiaomi, Realme, Oppo) may terminate Accessibility Services due to aggressive battery optimization. Users may need to manually disable battery optimization for reliable operation.
+
+---
+
+# 📌 Future Improvements
+
+* Backend proxy for secure API key management
+* Live streaming speech transcription
+* Cross-device synchronization
+* Weekly and monthly productivity insights
+* Smart adaptive interventions
+* Wear OS support
+* AI-generated productivity summaries
+* Family accountability mode
+
+---
+
+# 📄 License
+
+This project was developed as part of a hackathon and is intended for educational and demonstration purposes.
